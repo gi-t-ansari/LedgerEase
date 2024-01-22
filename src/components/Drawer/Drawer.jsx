@@ -1,24 +1,35 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { update } from "../../features/data/dataSlice";
+
 import {
   Drawer,
   Button,
   Typography,
   IconButton,
   Input,
+  Radio,
 } from "@material-tailwind/react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-function DrawerComponent({ type, position }) {
+export default function DrawerComponent({ type, position }) {
   const [open, setOpen] = useState(false);
-  const [customerData, setCustomerData] = useState([]);
-  const [supplierData, setSupplierData] = useState([]);
+  const data = useSelector((state) => state.data.value);
+  const dispatch = useDispatch();
 
   const schema = yup.object().shape({
     name: yup.string().required("Name is Required"),
-    phone: yup.number().required("Number is required"),
-    amount: yup.number().required("Amount is required"),
+    phone: yup
+      .number()
+      .required("Number is required")
+      .typeError("Entry must be a number"),
+    amount: yup
+      .number()
+      .required("Amount is required")
+      .typeError("Entry must be a number"),
+    type: yup.string(),
   });
 
   const {
@@ -30,17 +41,12 @@ function DrawerComponent({ type, position }) {
     resolver: yupResolver(schema),
   });
 
-  const onSubmitHandler = (data) => {
-    if (type === "Customer") {
-      setCustomerData([...customerData, data]);
-    } else {
-      setSupplierData([...supplierData, data]);
-    }
+  const onSubmitHandler = (formData) => {
+    dispatch(update(formData));
     reset();
   };
 
-  console.log("Customer Data", customerData);
-  console.log("Supplier Data", supplierData)
+  console.log(data);
 
   const openDrawer = () => setOpen(true);
 
@@ -115,6 +121,53 @@ function DrawerComponent({ type, position }) {
             />
             <span>{errors.amount?.message}</span>
           </div>
+          <div>
+            <Typography color="blue-gray" className="-mb-3">
+              Who are you?
+            </Typography>
+            <br />
+            {type === "Customer" ? (
+              <>
+                <Radio
+                  name="type"
+                  label="Customer"
+                  color="blue"
+                  ripple={true}
+                  value="Customer"
+                  defaultChecked
+                  {...register("type")}
+                />
+                <Radio
+                  name="type"
+                  label="Supplier"
+                  color="blue"
+                  ripple={true}
+                  value="Supplier"
+                  {...register("type")}
+                />
+              </>
+            ) : (
+              <>
+                <Radio
+                  name="type"
+                  label="Customer"
+                  color="blue"
+                  ripple={true}
+                  value="Customer"
+                  {...register("type")}
+                />
+                <Radio
+                  name="type"
+                  label="Supplier"
+                  color="blue"
+                  ripple={true}
+                  value="Supplier"
+                  defaultChecked
+                  {...register("type")}
+                />
+              </>
+            )}
+          </div>
           <Button variant="filled" type="submit">
             <Typography color="blue-gray">{`Add ${type}`}</Typography>
           </Button>
@@ -123,5 +176,3 @@ function DrawerComponent({ type, position }) {
     </div>
   );
 }
-
-export default DrawerComponent;
