@@ -14,9 +14,8 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-export default function DrawerComponent({ type, position }) {
+export default function DrawerComponent({ type }) {
   const [open, setOpen] = useState(false);
-  const data = useSelector((state) => state.data.value);
   const dispatch = useDispatch();
 
   const schema = yup.object().shape({
@@ -46,8 +45,6 @@ export default function DrawerComponent({ type, position }) {
     reset();
   };
 
-  console.log(data);
-
   const openDrawer = () => setOpen(true);
 
   const closeDrawer = () => setOpen(false);
@@ -57,9 +54,12 @@ export default function DrawerComponent({ type, position }) {
       <Button
         onClick={openDrawer}
         variant="filled"
-        className={`text-black ${position} bottom-0`}
+        className={`bottom-0 text-black`}
       >
-        <Typography color="blue-gray">{`+ Add ${type}`}</Typography>
+        <Typography
+          color="blue-gray"
+          className="md:text-lg text-xs"
+        >{`+ Add ${type}`}</Typography>
       </Button>
       <Drawer open={open} onClose={closeDrawer}>
         <div className="flex items-center justify-between px-4 pb-2">
@@ -110,7 +110,7 @@ export default function DrawerComponent({ type, position }) {
           </div>
           <div>
             <Typography color="blue-gray" className="-mb-3">
-              Opening Balance
+              Amount
             </Typography>
             <br />
             <Input

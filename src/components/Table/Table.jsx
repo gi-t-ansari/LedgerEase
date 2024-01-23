@@ -1,176 +1,101 @@
 import React from "react";
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { PencilIcon, UserPlusIcon } from "@heroicons/react/24/solid";
 import {
   Card,
   CardHeader,
-  Input,
   Typography,
-  Button,
   CardBody,
-  Chip,
-  Tabs,
-  TabsHeader,
-  Tab,
-  Avatar,
-  IconButton,
-  Tooltip,
 } from "@material-tailwind/react";
- 
-const TABS = [
-  {
-    label: "All",
-    value: "all",
-  },
-  {
-    label: "Monitored",
-    value: "monitored",
-  },
-  {
-    label: "Unmonitored",
-    value: "unmonitored",
-  },
-];
- 
-const TABLE_HEAD = ["Name", "Amount"];
- 
-const TABLE_ROWS = [
-    {
-        "amount": 100,
-        "phone": 8210470098,
-        "name": "Tanzeel Ansari"
-    },
-    {
-        "amount": 100,
-        "phone": 8081677989,
-        "name": "Abhishek"
-    },
-    {
-        "amount": 100,
-        "phone": 8210470098,
-        "name": "Tanzeel Ansari"
-    },
-    {
-        "amount": 100,
-        "phone": 8081677989,
-        "name": "Abhishek"
-    },
-    {
-        "amount": 100,
-        "phone": 8210470098,
-        "name": "Tanzeel Ansari"
-    },
-    {
-        "amount": 100,
-        "phone": 8081677989,
-        "name": "Abhishek"
-    },
-    {
-        "amount": 100,
-        "phone": 8210470098,
-        "name": "Tanzeel Ansari"
-    },
-    {
-        "amount": 100,
-        "phone": 8081677989,
-        "name": "Abhishek"
-    }
-];
- 
-export default function MembersTable() {
+import { Drawer } from "..";
+
+export default function MembersTable({ data, type, totalAmount }) {
   return (
-    <Card className="h-full w-full">
+    <Card className="h-full md:w-full">
       <CardHeader floated={false} shadow={false} className="rounded-none">
         <div className="mb-8 flex items-center justify-between gap-8">
           <div>
-            <Typography variant="h5" color="blue-gray">
-              Members list
+            <Typography
+              variant="h5"
+              color="blue-gray"
+              className="md:text-lg text-md"
+            >
+              {`${type} List`}
             </Typography>
-            <Typography color="gray" className="mt-1 font-normal">
-              See information about all members
+            <Typography
+              color="blue-gray"
+              className="mt-1 font-normal md:text-lg text-sm flex align-center gap-1"
+            >
+              {"Total:"}
+              <Typography
+                variant="h6"
+                color="blue-gray"
+                className="font-normal md:text-lg text-sm"
+              >
+                <i className="fa-sharp fa-solid fa-indian-rupee-sign">{` ${totalAmount}`}</i>
+              </Typography>
             </Typography>
           </div>
           <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
-            <Button variant="outlined" size="sm">
-              view all
-            </Button>
-            <Button className="flex items-center gap-3" size="sm">
-              <UserPlusIcon strokeWidth={2} className="h-4 w-4" /> Add member
-            </Button>
-          </div>
-        </div>
-        <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-          <Tabs value="all" className="w-full md:w-max">
-            <TabsHeader>
-              {TABS.map(({ label, value }) => (
-                <Tab key={value} value={value}>
-                  &nbsp;&nbsp;{label}&nbsp;&nbsp;
-                </Tab>
-              ))}
-            </TabsHeader>
-          </Tabs>
-          <div className="w-full md:w-72">
-            <Input
-              label="Search"
-              icon={<MagnifyingGlassIcon className="h-5 w-5" />}
-            />
+            <Drawer type={type} />
           </div>
         </div>
       </CardHeader>
-      <CardBody className="overflow-scroll px-0">
-        <table className="mt-4 w-full min-w-max table-auto text-left">
+      <CardBody className="px-0">
+        <table className="mt-4 w-full min-w-auto table-auto">
           <thead>
             <tr>
-              {TABLE_HEAD.map((head) => (
-                <th
-                  key={head}
-                  className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4"
+              <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4 text-left">
+                <Typography
+                  variant="medium"
+                  color="blue-gray"
+                  className="font-normal leading-none opacity-70"
                 >
-                  <Typography
-                    variant="small"
-                    color="blue-gray"
-                    className="font-normal leading-none opacity-70"
-                  >
-                    {head}
-                  </Typography>
-                </th>
-              ))}
+                  Name
+                </Typography>
+              </th>
+              <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4 text-right">
+                <Typography
+                  variant="medium"
+                  color="blue-gray"
+                  className="font-normal leading-none opacity-70"
+                >
+                  Amount
+                </Typography>
+              </th>
             </tr>
           </thead>
           <tbody>
-            {TABLE_ROWS.map(
-              ({ amount, name}, index) => {
-                const isLast = index === TABLE_ROWS.length - 1;
-                const classes = isLast
-                  ? "p-4"
-                  : "p-4 border-b border-blue-gray-50";
- 
-                return (
-                  <tr key={name}>
-                    <td className={classes}>
-                      <div className="flex items-center gap-3">
-                        <div className="flex flex-col">
-                          <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal"
-                          >
-                            {name}
-                          </Typography>
-                          <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal opacity-70"
-                          >
-                            <i className="fa-sharp fa-solid fa-indian-rupee-sign">{amount}</i>
-                          </Typography>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              },
-            )}
+            {data.map(({ amount, name }, index) => {
+              const isLast = index === data.length - 1;
+              const classes = isLast
+                ? "p-4"
+                : "p-4 border-b border-blue-gray-50";
+
+              return (
+                <tr key={name} className="even:bg-blue-gray-50/50">
+                  <td className={`${classes} text-left`}>
+                    <Typography
+                      variant="small"
+                      color="blue-gray"
+                      className="font-normal"
+                    >
+                      {name}
+                    </Typography>
+                  </td>
+                  <td className={`${classes} text-right`}>
+                    <Typography
+                      variant="small"
+                      color="blue-gray"
+                      className="font-normal opacity-70"
+                    >
+                      <i className="fa-sharp fa-solid fa-indian-rupee-sign">
+                        {" "}
+                        {amount}
+                      </i>
+                    </Typography>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </CardBody>

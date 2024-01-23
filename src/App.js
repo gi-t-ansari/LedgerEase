@@ -1,5 +1,5 @@
 import React from "react";
-import { NavBar } from "./components";
+import { NavBar, Table } from "./components";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Supplier, Customer } from "./pages";
 import { APP_URL } from "./config";
