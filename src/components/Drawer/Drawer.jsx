@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { update } from "../../features/data/dataSlice";
+import { update } from "../../redux/slices/dataSlice";
 
 import {
   Drawer,
@@ -21,9 +21,10 @@ export default function DrawerComponent({ type }) {
   const schema = yup.object().shape({
     name: yup.string().required("Name is Required"),
     phone: yup
-      .number()
-      .required("Number is required")
-      .typeError("Entry must be a number"),
+      .string()
+      .matches(/^\d+$/, "Please Enter Only Numbers")
+      .length(10, "Phone number must be 10 digits")
+      .required("Phone number is Required"),
     amount: yup
       .number()
       .required("Amount is required")
@@ -94,7 +95,7 @@ export default function DrawerComponent({ type }) {
             </Typography>
             <br />
             <Input type="text" label="Enter Party Name" {...register("name")} />
-            <span>{errors.name?.message}</span>
+            <span className="text-xs">{errors.name?.message}</span>
           </div>
           <div>
             <Typography color="blue-gray" className="-mb-3">
@@ -106,7 +107,7 @@ export default function DrawerComponent({ type }) {
               label="Enter Phone Number"
               {...register("phone")}
             />
-            <span>{errors.phone?.message}</span>
+            <span className="text-xs">{errors.phone?.message}</span>
           </div>
           <div>
             <Typography color="blue-gray" className="-mb-3">
@@ -114,12 +115,12 @@ export default function DrawerComponent({ type }) {
             </Typography>
             <br />
             <Input
-              type="text"
+              type="number"
               label="Enter Amount"
               icon={<i className="fa-sharp fa-solid fa-indian-rupee-sign"></i>}
               {...register("amount")}
             />
-            <span>{errors.amount?.message}</span>
+            <span className="text-xs">{errors.amount?.message}</span>
           </div>
           <div>
             <Typography color="blue-gray" className="-mb-3">
