@@ -19,7 +19,7 @@ export default function DrawerComponent({ type }) {
   const dispatch = useDispatch();
 
   const schema = yup.object().shape({
-    name: yup.string().required("Name is Required"),
+    name: yup.string().required("Name is Required").length(4, "Min 4 characters required."),
     phone: yup
       .string()
       .matches(/^\d+$/, "Please Enter Only Numbers")
