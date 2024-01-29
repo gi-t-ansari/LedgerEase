@@ -13,6 +13,7 @@ function InputWithController({ control, name, label }) {
           <span className="text-xs text-red-500 ml-1">{fieldState.error?.message}</span>{" "}
         </div>
       )}
+      defaultValue=""
     />
   );
 }
