@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { update } from "../../redux/slices/dataSlice";
+import { InputWithController } from "../Common";
 
 import {
   Drawer,
   Button,
   Typography,
   IconButton,
-  Input,
   Radio,
 } from "@material-tailwind/react";
 import { useForm } from "react-hook-form";
@@ -16,33 +16,29 @@ import * as yup from "yup";
 
 export default function DrawerComponent({ type }) {
   const [open, setOpen] = useState(false);
+  const [inputType, setInputType] = useState(type);
   const dispatch = useDispatch();
 
   const schema = yup.object().shape({
-    name: yup.string().required("Name is Required").length(4, "Min 4 characters required."),
+    name: yup.string().required("Name is Required"),
     phone: yup
       .string()
+      .required("Phone number is Required")
       .matches(/^\d+$/, "Please Enter Only Numbers")
-      .length(10, "Phone number must be 10 digits")
-      .required("Phone number is Required"),
+      .length(10, "Phone number must be 10 digits"),
     amount: yup
-      .number()
+      .number("Entry must be a number")
       .required("Amount is required")
       .typeError("Entry must be a number"),
     type: yup.string(),
   });
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm({
+  const { handleSubmit, reset, control } = useForm({
     resolver: yupResolver(schema),
   });
 
   const onSubmitHandler = (formData) => {
-    dispatch(update(formData));
+    dispatch(update({ ...formData, type: inputType }));
     reset();
   };
 
@@ -86,91 +82,56 @@ export default function DrawerComponent({ type }) {
         </div>
         <hr />
         <form
-          className="flex flex-col gap-6 p-4"
+          className="flex flex-col gap-1 p-4"
           onSubmit={handleSubmit(onSubmitHandler)}
         >
-          <div>
-            <Typography color="blue-gray" className="-mb-3">
-              Party Name
-            </Typography>
-            <br />
-            <Input type="text" label="Enter Party Name" {...register("name")} />
-            <span className="text-xs">{errors.name?.message}</span>
-          </div>
-          <div>
-            <Typography color="blue-gray" className="-mb-3">
-              Phone Number
-            </Typography>
-            <br />
-            <Input
-              type="number"
-              label="Enter Phone Number"
-              {...register("phone")}
-            />
-            <span className="text-xs">{errors.phone?.message}</span>
-          </div>
-          <div>
-            <Typography color="blue-gray" className="-mb-3">
-              Amount
-            </Typography>
-            <br />
-            <Input
-              type="number"
-              label="Enter Amount"
-              icon={<i className="fa-sharp fa-solid fa-indian-rupee-sign"></i>}
-              {...register("amount")}
-            />
-            <span className="text-xs">{errors.amount?.message}</span>
-          </div>
+          <InputWithController
+            control={control}
+            name="name"
+            label="Enter Party Name"
+          />
+          <InputWithController
+            control={control}
+            name="phone"
+            label="Enter Phone Number"
+          />
+          <InputWithController
+            control={control}
+            name="amount"
+            label="Enter Amount"
+          />
           <div>
             <Typography color="blue-gray" className="-mb-3">
               Who are you?
             </Typography>
             <br />
-            {type === "Customer" ? (
-              <>
-                <Radio
-                  name="type"
-                  label="Customer"
-                  color="blue"
-                  ripple={true}
-                  value="Customer"
-                  defaultChecked
-                  {...register("type")}
-                />
-                <Radio
-                  name="type"
-                  label="Supplier"
-                  color="blue"
-                  ripple={true}
-                  value="Supplier"
-                  {...register("type")}
-                />
-              </>
-            ) : (
-              <>
-                <Radio
-                  name="type"
-                  label="Customer"
-                  color="blue"
-                  ripple={true}
-                  value="Customer"
-                  {...register("type")}
-                />
-                <Radio
-                  name="type"
-                  label="Supplier"
-                  color="blue"
-                  ripple={true}
-                  value="Supplier"
-                  defaultChecked
-                  {...register("type")}
-                />
-              </>
-            )}
+
+            <Radio
+              name="type"
+              label="Customer"
+              color="blue"
+              ripple={true}
+              value="Customer"
+              checked={inputType === "Customer"}
+              onChange={(e) =>
+                setInputType(e.target.value ? "Customer" : "Supplier")
+              }
+            />
+            <Radio
+              name="type"
+              label="Supplier"
+              color="blue"
+              ripple={true}
+              value="Supplier"
+              checked={inputType === "Supplier"}
+              onChange={(e) =>
+                setInputType(e.target.value ? "Supplier" : "Customer")
+              }
+              // {...register("type")}
+            />
           </div>
           <Button variant="filled" type="submit">
-            <Typography color="blue-gray">{`Add ${type}`}</Typography>
+            <Typography color="blue-gray">{`Add ${inputType}`}</Typography>
           </Button>
         </form>
       </Drawer>
